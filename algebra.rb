@@ -38,7 +38,6 @@ class Literal < Interval
 	end 
 
 	def inter_literal x
-
 		if self.lvalue >= x.lvalue then
 			ltemp = self.lvalue
 			if ltemp == x.lvalue then
@@ -75,7 +74,6 @@ class Literal < Interval
 
 
 		temp = Literal.new(ltemp,rtemp,ltempopr,rtempopr).to_s
-
 	end
 
 	def union_literal x
@@ -134,6 +132,24 @@ class Literal < Interval
 	end
 
 	def union_rightinf x
+		
+		if x.inter_literal(self) == "e"
+			raise = "Error: Intersccion vacia"
+		end
+
+		if self.lvalue <= x.lvalue then
+			ltemp = self.lvalue
+			if ltemp == x.lvalue then
+				ltempopr = self.lopenopr && x.lopenopr
+			else 
+				ltempopr = self.lopenopr
+			end
+		else 
+			ltemp = x.lvalue
+			ltempopr = x.lopenopr
+		end
+
+		temp = RightInfinite.new(ltemp,ltempopr).to_s
 	end
 	
 	def inter_leftinf x	
@@ -200,28 +216,12 @@ class RightInfinite < Interval
 
 	def inter_literal x 
 		x.inter_rightinf(self)
-=begin
-		if self.lvalue >= x.lvalue then
-			ltemp = self.lvalue
-			if ltemp == x.lvalue then
-				ltempopr = self.lopenopr && x.lopenopr
-			else 
-				ltempopr = self.lopenopr
-			end
-		else 
-			ltemp = x.lvalue
-			ltempopr = x.lopenopr
-		end
-
-		if ltemp > x.rvalue
-			return "e"
-		end
-
-		temp = Literal.new(ltemp,x.rvalue,ltempopr,x.ropenopr).to_s
-=end
 	end
 
 	def union_literal x
+		x.union_rightinf(self)
+	end
+=begin
 		if inter_literal(x) == "e"
 			raise = "Error: Intersccion vacia"
 		end
@@ -237,9 +237,8 @@ class RightInfinite < Interval
 			ltemp = x.lvalue
 			ltempopr = x.lopenopr
 		end
-
 		temp = RightInfinite.new(ltemp,ltempopr).to_s
-	end
+=end
 
 	def inter_leftinf x
 	end
